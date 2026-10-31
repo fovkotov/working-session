@@ -54,6 +54,7 @@ button, input { font: inherit; color: inherit; }
 .word {
   --fs: 140;
   --wx: 1;
+  --hy: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -105,7 +106,7 @@ button, input { font: inherit; color: inherit; }
 }
 
 .sound-svg {
-  height: calc(var(--fs) * 1px);
+  height: calc(var(--fs) * var(--hy) * 1px);
   width: calc(var(--fs) * var(--aspect) * var(--wx) * 1px);
 }
 
@@ -121,7 +122,7 @@ button, input { font: inherit; color: inherit; }
 .caret {
   flex: none;
   width: 2px;
-  height: calc(var(--fs) * 0.62 * 1px);
+  height: calc(var(--fs) * var(--hy) * 0.62 * 1px);
   background: var(--ink);
   align-self: center;
   animation: blink 1.05s steps(1) infinite;
@@ -152,11 +153,17 @@ button, input { font: inherit; color: inherit; }
 .text-input:focus { outline: none; }
 
 .charset {
-  padding: 12vh 6vw 160px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 12vh 12px 160px;
 }
 
 .charset-grid {
   display: grid;
+  width: 100%;
+  max-width: none;
+  margin: 0;
   grid-template-columns: repeat(8, minmax(0, 1fr));
   gap: 40px 18px;
   align-items: start;
@@ -248,7 +255,7 @@ button, input { font: inherit; color: inherit; }
 .play-fab.busy .icon-stop { display: block; }
 
 @media (max-width: 640px) {
-  .charset { padding: 8vh 5vw 140px; }
+  .charset { padding: 8vh 12px 140px; }
   .charset-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 28px 12px;

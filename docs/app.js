@@ -178,10 +178,22 @@ function indexFromX(x) {
   return slots.length;
 }
 
-function setSize(fs, wx) {
+function setSize(fs, wx, hy = 1) {
   const word = el("wordDisplay");
   word.style.setProperty("--fs", fs.toFixed(2));
   word.style.setProperty("--wx", wx.toFixed(4));
+  word.style.setProperty("--hy", hy.toFixed(4));
+}
+
+function baseSize() {
+  const min = 34;
+  const max = Math.max(min + 8, window.innerHeight * 0.58);
+  return min * Math.pow(max / min, 0.5);
+}
+
+function heightStretch(t) {
+  if (t <= 0.5) return 0.35 + (t / 0.5) * 0.65;
+  return 1 + ((t - 0.5) / 0.5) * 1.2;
 }
 
 function emWidth(text) {
@@ -209,16 +221,13 @@ function applyPointer() {
     const wx = 0.92;
     const avail = window.innerWidth * 0.88;
     const fs = Math.max(32, Math.min(window.innerHeight * 0.24, avail / (emWidth(el("textInput").value) * wx)));
-    setSize(fs, wx);
+    setSize(fs, wx, 1);
     return;
   }
   state.heightT = Math.min(1, Math.max(0, 1 - state.ny));
   state.widthT = Math.min(1, Math.max(0, state.nx));
-  const min = 34;
-  const max = Math.max(min + 8, window.innerHeight * 0.58);
-  const fs = min * Math.pow(max / min, state.heightT);
   const wx = 0.42 + state.widthT * (1.75 - 0.42);
-  setSize(fs, wx);
+  setSize(baseSize(), wx, heightStretch(state.heightT));
 }
 
 function renderCharset() {
