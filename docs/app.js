@@ -195,8 +195,14 @@ function baseSize() {
 }
 
 function heightStretch(t) {
-  if (t <= 0.5) return 0.35 + (t / 0.5) * 0.65;
-  return 1 + ((t - 0.5) / 0.5) * 1.2;
+  const rest = t <= 0.5 ? 0.35 + (t / 0.5) * 0.65 : 1 + ((t - 0.5) / 0.5) * 1.2;
+  return Math.max(0.1, 1 + 3 * (rest - 1));
+}
+
+function widthStretch(t) {
+  const rest = 0.42 + t * (1.75 - 0.42);
+  const center = 0.42 + 0.5 * (1.75 - 0.42);
+  return Math.max(0.08, center + 3 * (rest - center));
 }
 
 function emWidth(text) {
@@ -229,8 +235,7 @@ function applyPointer() {
   }
   state.heightT = Math.min(1, Math.max(0, 1 - state.ny));
   state.widthT = Math.min(1, Math.max(0, state.nx));
-  const wx = 0.42 + state.widthT * (1.75 - 0.42);
-  setSize(baseSize(), wx, heightStretch(state.heightT));
+  setSize(baseSize(), widthStretch(state.widthT), heightStretch(state.heightT));
 }
 
 function renderCharset() {
