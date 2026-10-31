@@ -140,6 +140,7 @@ function renderWord() {
   placeCaret();
   markSelection();
   paintHeldSlots();
+  paintPhrase();
 }
 
 function caretIndex() {
@@ -327,9 +328,9 @@ function stopPhrase() {
   setPlaying(false);
 }
 
-function follow() {
+function paintPhrase() {
   const phrase = state.phrase;
-  if (!phrase) return;
+  if (!phrase || !state.ctx) return null;
   const now = state.ctx.currentTime - phrase.at;
   const chars = new Set();
   const letters = new Set();
@@ -345,6 +346,14 @@ function follow() {
   document.querySelectorAll(".char-pair").forEach((card) => {
     card.classList.toggle("playing", letters.has(card.dataset.letter));
   });
+  return now;
+}
+
+function follow() {
+  const phrase = state.phrase;
+  if (!phrase) return;
+  const now = paintPhrase();
+  if (now == null) return;
   if (now > phrase.sched.end + 0.2) stopPhrase();
   else phrase.raf = requestAnimationFrame(follow);
 }
@@ -352,7 +361,6 @@ function follow() {
 async function playPhrase() {
   await wake();
   stopPhrase();
-  state.speakUntil.clear();
   if (!state.font || state.buffers.size === 0) return;
   const sched = buildSchedule(el("textInput").value);
   if (!sched.notes.length) return;
@@ -363,6 +371,7 @@ async function playPhrase() {
     if (src) sources.push(src);
   }
   if (!sources.length) return;
+  state.speakUntil.clear();
   state.phrase = {
     sched,
     at,
