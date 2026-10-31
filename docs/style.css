@@ -157,15 +157,18 @@ button, input { font: inherit; color: inherit; }
 
 .charset-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 56px 40px;
-  align-items: center;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 40px 18px;
+  align-items: start;
 }
 
 .char-pair {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
   padding: 0;
   margin: 0;
   background: none;
@@ -173,7 +176,7 @@ button, input { font: inherit; color: inherit; }
   color: var(--ink);
   cursor: pointer;
   user-select: none;
-  text-align: left;
+  text-align: center;
   transition: transform 0.15s ease;
 }
 
@@ -193,23 +196,21 @@ button, input { font: inherit; color: inherit; }
 .base-letter {
   font-family: "Wremena", serif;
   font-weight: 400;
-  font-size: 84px;
-  line-height: 0.8;
-  color: var(--ink);
-  min-width: 0.72em;
-  text-align: right;
-  flex: none;
+  font-size: 16px;
+  line-height: 1;
+  color: #FFFFFF;
+  text-align: center;
 }
 
 .sound-glyph {
-  flex: none;
-  display: flex;
-  align-items: center;
+  display: block;
+  width: 100%;
+  min-width: 0;
 }
 
 .charset-svg {
-  height: 120px;
-  width: calc(120px * var(--aspect));
+  width: 100%;
+  height: 96px;
 }
 
 .play-fab {
@@ -246,17 +247,13 @@ button, input { font: inherit; color: inherit; }
 .play-fab.busy .icon-play { display: none; }
 .play-fab.busy .icon-stop { display: block; }
 
-@media (max-width: 760px) {
+@media (max-width: 640px) {
   .charset { padding: 8vh 5vw 140px; }
   .charset-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 36px 16px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 28px 12px;
   }
-  .base-letter { font-size: 56px; }
-  .charset-svg {
-    height: 84px;
-    width: calc(84px * var(--aspect));
-  }
+  .charset-svg { height: 80px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
