@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Звуковой шрифт</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <span class="mark" aria-hidden="true"></span>
+  <select id="fontSel" aria-label="гарнитура"></select>
+</header>
+
+<section class="stage">
+  <div class="typebox">
+    <input id="text" type="text" autocomplete="off" spellcheck="false"
+           placeholder="наберите слово" value="sound font">
+    <div class="typeactions">
+      <button id="play" class="primary">Произнести</button>
+      <button id="stop">Стоп</button>
+      <button id="exportWav">WAV</button>
+      <button id="exportPng">PNG</button>
+      <button id="exportSvg">SVG</button>
+    </div>
+  </div>
+
+  <div class="scorewrap">
+    <canvas id="score" height="260"></canvas>
+    <div id="cells" class="cells"></div>
+  </div>
+</section>
+
+<section class="axes">
+  <div class="presets" id="presets"></div>
+  <div class="sliders">
+    <label class="slider">
+      <span class="k">Темп <i id="vTempo"></i></span>
+      <input type="range" id="tempo" min="60" max="700" step="5" value="190">
+    </label>
+    <label class="slider">
+      <span class="k">Трекинг <i id="vTrack"></i></span>
+      <input type="range" id="track" min="-40" max="120" step="1" value="0">
+    </label>
+    <label class="slider">
+      <span class="k">Высота <i id="vPitch"></i></span>
+      <input type="range" id="pitch" min="-12" max="12" step="1" value="0">
+    </label>
+    <label class="slider">
+      <span class="k">Насыщенность <i id="vWeight"></i></span>
+      <input type="range" id="weight" min="0" max="100" step="1" value="50">
+    </label>
+    <label class="slider">
+      <span class="k">Ширина <i id="vWidth"></i></span>
+      <input type="range" id="width" min="0" max="100" step="1" value="35">
+    </label>
+    <label class="slider">
+      <span class="k">Пространство <i id="vSpace"></i></span>
+      <input type="range" id="space" min="0" max="100" step="1" value="22">
+    </label>
+    <label class="slider">
+      <span class="k">Рукописность <i id="vHuman"></i></span>
+      <input type="range" id="human" min="0" max="100" step="1" value="18">
+    </label>
+  </div>
+</section>
+
+<section class="specimen">
+  <div id="grid" class="grid"></div>
+</section>
+
+<script src="app.js"></script>
+</body>
+</html>

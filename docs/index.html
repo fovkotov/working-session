@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#D6D6D6">
+<title>working-session</title>
+<link rel="icon" type="image/jpeg" href="assets/favicon.jpg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<section class="hero" id="hero">
+  <div class="type-stage" id="typeStage">
+    <div class="word" id="wordDisplay" aria-hidden="true"></div>
+    <input id="textInput" class="text-input" type="text" value="working-session"
+           autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+           autofocus aria-label="Type">
+  </div>
+</section>
+
+<section class="charset" id="charset">
+  <div class="charset-grid" id="charsetGrid"></div>
+</section>
+
+<button id="playBtn" class="play-fab" type="button" aria-label="Play" aria-pressed="false">
+  <svg class="icon icon-play" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M9 6.2v11.6L18.5 12z"/>
+  </svg>
+  <svg class="icon icon-stop" viewBox="0 0 24 24" aria-hidden="true">
+    <rect x="7" y="7" width="10" height="10"/>
+  </svg>
+</button>
+
+<script src="app.js"></script>
+</body>
+</html>
