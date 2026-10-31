@@ -164,7 +164,7 @@ button, input { font: inherit; color: inherit; }
   width: 100%;
   max-width: none;
   margin: 0;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 40px 18px;
   align-items: start;
 }
@@ -257,7 +257,6 @@ button, input { font: inherit; color: inherit; }
 @media (max-width: 640px) {
   .charset { padding: 8vh 12px 140px; }
   .charset-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 28px 12px;
   }
   .charset-svg { height: 80px; }
