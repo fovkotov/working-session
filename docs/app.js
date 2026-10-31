@@ -29,6 +29,7 @@ const state = {
   widthT: 0.5,
   prevText: "working-session",
   phrase: null,
+  speakUntil: new Map(),
   glyphBody: new Map(),
   pendingCaret: null,
 };
@@ -138,6 +139,7 @@ function renderWord() {
   el("wordDisplay").innerHTML = parts.join("") + '<span class="caret" aria-hidden="true"></span>';
   placeCaret();
   markSelection();
+  paintHeldSlots();
 }
 
 function caretIndex() {
@@ -319,6 +321,7 @@ function stopPhrase() {
   for (const src of phrase.sources) {
     try { src.stop(); } catch (e) { /* already ended */ }
   }
+  state.speakUntil.clear();
   el("wordDisplay").querySelectorAll(".slot.speaking").forEach((n) => n.classList.remove("speaking"));
   document.querySelectorAll(".char-pair.playing").forEach((n) => n.classList.remove("playing"));
   setPlaying(false);
@@ -349,6 +352,7 @@ function follow() {
 async function playPhrase() {
   await wake();
   stopPhrase();
+  state.speakUntil.clear();
   if (!state.font || state.buffers.size === 0) return;
   const sched = buildSchedule(el("textInput").value);
   if (!sched.notes.length) return;
@@ -375,28 +379,69 @@ function togglePhrase() {
   else playPhrase();
 }
 
-async function playLetter(letter) {
+function holdSlot(index, ms) {
+  if (state.phrase || index == null || index < 0) return;
+  const text = el("textInput").value;
+  const ch = text[index];
+  if (ch == null) return;
+  const until = performance.now() + ms;
+  const prev = state.speakUntil.get(index);
+  const kept = prev && prev.ch === ch ? prev.until : 0;
+  state.speakUntil.set(index, { until: Math.max(kept, until), ch });
+  const slot = el("wordDisplay").querySelector(`.slot[data-i="${index}"]`);
+  if (slot) slot.classList.add("speaking");
+  setTimeout(() => releaseSlot(index), ms);
+}
+
+function releaseSlot(index) {
+  if (state.phrase) return;
+  const hold = state.speakUntil.get(index);
+  if (!hold || hold.until > performance.now() + 20) return;
+  state.speakUntil.delete(index);
+  if (el("textInput").value[index] !== hold.ch) return;
+  const slot = el("wordDisplay").querySelector(`.slot[data-i="${index}"]`);
+  if (slot) slot.classList.remove("speaking");
+}
+
+function paintHeldSlots() {
+  if (state.phrase) return;
+  const text = el("textInput").value;
+  const now = performance.now();
+  for (const [index, hold] of [...state.speakUntil]) {
+    if (!hold || hold.until <= now || text[index] !== hold.ch) {
+      state.speakUntil.delete(index);
+      continue;
+    }
+    const slot = el("wordDisplay").querySelector(`.slot[data-i="${index}"]`);
+    if (slot) slot.classList.add("speaking");
+  }
+}
+
+async function playLetter(letter, charIndex) {
   await wake();
   if (!state.buffers.has(letter)) return;
   const note = voiceOf(letter, 0, false);
   startVoice(note, state.ctx.currentTime + 0.01);
   if (state.phrase) return;
-  const card = document.querySelector(`.char-pair[data-letter="${letter}"]`);
-  if (!card) return;
-  card.classList.add("playing");
   const ms = (state.buffers.get(letter).duration / note.rate) * 1000 + 50;
-  setTimeout(() => {
-    if (!state.phrase) card.classList.remove("playing");
-  }, ms);
+  const card = document.querySelector(`.char-pair[data-letter="${letter}"]`);
+  if (card) {
+    card.classList.add("playing");
+    setTimeout(() => {
+      if (!state.phrase) card.classList.remove("playing");
+    }, ms);
+  }
+  if (charIndex != null) holdSlot(charIndex, ms);
 }
 
-function playTyped(chunk) {
+function playTyped(chunk, startIndex) {
   let delay = 0;
-  for (const ch of chunk) {
-    const letters = soundLetters(ch);
+  for (let n = 0; n < chunk.length; n++) {
+    const letters = soundLetters(chunk[n]);
+    const charIndex = startIndex + n;
     for (const letter of letters) {
       const wait = delay;
-      setTimeout(() => playLetter(letter), wait);
+      setTimeout(() => playLetter(letter, charIndex), wait);
       delay += 55;
     }
     if (delay > 700) break;
@@ -413,8 +458,9 @@ function onType() {
   if (!fineQuery.matches) applyPointer();
   if (next.length > prev.length) {
     const added = next.length - prev.length;
-    const chunk = next.slice(Math.max(0, caret - added), caret);
-    if (chunk && added <= 24) playTyped(chunk);
+    const start = Math.max(0, caret - added);
+    const chunk = next.slice(start, caret);
+    if (chunk && added <= 24) playTyped(chunk, start);
   }
 }
 
