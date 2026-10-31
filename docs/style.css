@@ -110,8 +110,12 @@ button, input { font: inherit; color: inherit; }
 }
 
 .slot.speaking .sound-svg,
+.slot.speaking .sound-svg rect {
+  fill: #FF2B2B;
+}
+
 .slot.speaking .dash-mark {
-  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.95));
+  background: #FF2B2B;
 }
 
 .caret {
@@ -178,8 +182,12 @@ button, input { font: inherit; color: inherit; }
 .char-pair.playing { transform: scale(1.07); }
 
 .char-pair.playing .charset-svg,
+.char-pair.playing .charset-svg rect {
+  fill: #FF2B2B;
+}
+
 .char-pair.playing .base-letter {
-  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.95));
+  color: #FF2B2B;
 }
 
 .base-letter {
